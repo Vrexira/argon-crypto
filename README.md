@@ -32,6 +32,13 @@ To use this encryption/decryption module in a communication between two servers,
     
     key = ac.generate_argon_key(keyword, salt)
     ```
+  
+    Addiotionally, several parameters can be specified to customize the key generation process. The default values are:  
+    ```python
+    import argoncrypto as ac
+    
+    ac.generate_argon_key(keyword, salt, key_length = 32, time_cost = 2, memory_cost = 100, parallelism = 8)
+    ```
     <br>
 
 - #### Decide on the encryption mode: 

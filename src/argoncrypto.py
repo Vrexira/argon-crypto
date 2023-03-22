@@ -116,7 +116,7 @@ def decrypt_data(key: bytes, data: dict, mode: int = 0) -> str | bytes:
 		raise ValueError("Invalid mode")
 
 
-def generate_argon_key(keyword: str, salt: str) -> bytes:
+def generate_argon_key(secret: str, salt: str, key_length: int = 32, time_cost: int = 2, memory_cost: int = 100, parallelism: int = 8) -> bytes:
 	"""
 	Generates a key using Argon2
 	
@@ -129,9 +129,9 @@ def generate_argon_key(keyword: str, salt: str) -> bytes:
 	
 	The function first sets up the parameters for the Argon2 function:
 	
-	- password: The secret value to use as input to the key derivation function. In this case, the password is set to the string "mysecretpassword", encoded as UTF-8 bytes.
-	- salt: A random value used to add additional randomness to the key. In this case, the salt is set to the string "mysecretpasswordsalt123", encoded as bytes.
-	- key_length: The length of the derived key, in bytes. In this case, the key length is set to 32 bytes (256 bits).
+	- secret: The secret value to use as input to the key derivation function.
+	- salt: A random value used to add additional randomness to the key.
+	- key_length: The length of the derived key, in bytes.
 	- time_cost: The amount of time to spend on each iteration of the key derivation function. Increasing this value makes it more difficult to brute-force the derived key.
 	- memory_cost: The amount of memory to use during the key derivation function. Increasing this value also makes it more difficult to brute-force the derived key.
 	- parallelism: The number of parallel threads to use during the key derivation function.
@@ -141,23 +141,21 @@ def generate_argon_key(keyword: str, salt: str) -> bytes:
 	
 	This method returns a byte string containing the derived key.
 	
-	:param keyword: The secret value to use as input to the key derivation function.
+	:param secret: The secret value to use as input to the key derivation function.
 	:param salt: A random value used to add additional randomness to the key.
+	:param key_length: The length of the derived key, in bytes.
+	:param time_cost: The amount of time to spend on each iteration of the key derivation function.
+	:param memory_cost: The amount of memory to use during the key derivation function.
+	:param parallelism: The number of parallel threads to use during the key derivation function.
 	:return bytes:
 	"""
 	
-	# Set up the parameters for Argon2
-	key_length = 16  # 32 bytes = 256 bits
-	time_cost = 1  # 2 passes
-	memory_cost = 12800  # 100 MB
-	parallelism = 1  # Number of threads
-	
 	# Use Argon2 to derive the key
 	key = argon2.low_level.hash_secret_raw(
-		secret=keyword.encode('utf-8'),
+		secret=secret.encode('utf-8'),
 		salt=salt.encode('utf-8'),
 		time_cost=time_cost,
-		memory_cost=memory_cost,
+		memory_cost=memory_cost * 100,
 		parallelism=parallelism,
 		hash_len=key_length,
 		type=argon2.low_level.Type.ID
