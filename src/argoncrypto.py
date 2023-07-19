@@ -2,6 +2,13 @@ import argon2
 from Cryptodome.Cipher import AES
 
 
+MODES = {
+	0: "AES-GCM",
+	1: "AES-CTR",
+	2: "AES-CBC"
+}
+
+
 def encrypt_data(key: bytes, data: any, mode: int = 0) -> dict:
 	"""Encrypts data using AES-GCM
 
